@@ -8,7 +8,7 @@ package es.educastur.sergiovm73.tienda2025;
  *
  * @author 1dawd24
  */
-public class Artículo {
+public class Articulo {
     
     
     private String idArticulo;
@@ -16,7 +16,7 @@ public class Artículo {
     private int existencias;
     private double pvp;
 
-    public Artículo(String idArticulo, String descripcion, int existencias, double pvp) {
+    public Articulo(String idArticulo, String descripcion, int existencias, double pvp) {
         this.idArticulo = idArticulo;
         this.descripcion = descripcion;
         this.existencias = existencias;
@@ -57,7 +57,7 @@ public class Artículo {
 
     @Override
     public String toString() {
-        return "Art\u00edculo{" + "idArticulo=" + idArticulo + ", descripcion=" + descripcion + ", existencias=" + existencias + ", pvp=" + pvp + '}';
+        return idArticulo + " - " + descripcion + " - " + existencias + " (" + pvp + ")";
     }
 
 

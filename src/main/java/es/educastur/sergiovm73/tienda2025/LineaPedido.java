@@ -8,12 +8,12 @@ package es.educastur.sergiovm73.tienda2025;
  *
  * @author 1dawd24
  */
-public class LíneaPedido {
+public class LineaPedido {
     
     private String idArticulo;
     private int unidades;
 
-    public LíneaPedido(String idArticulo, int unidades) {
+    public LineaPedido(String idArticulo, int unidades) {
         this.idArticulo = idArticulo;
         this.unidades = unidades;
     }

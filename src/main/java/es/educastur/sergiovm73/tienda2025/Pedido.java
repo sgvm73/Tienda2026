@@ -17,9 +17,9 @@ public class Pedido {
     private String idPedido;
     private Cliente clientePedido;
     private LocalDate fechaPedido;
-    private ArrayList <LíneaPedido>cestaCompra;
+    private ArrayList <LineaPedido>cestaCompra;
 
-    public Pedido(String idPedido, Cliente clientePedido, LocalDate fechaPedido, ArrayList<LíneaPedido> cestaCompra) {
+    public Pedido(String idPedido, Cliente clientePedido, LocalDate fechaPedido, ArrayList<LineaPedido> cestaCompra) {
         this.idPedido = idPedido;
         this.clientePedido = clientePedido;
         this.fechaPedido = fechaPedido;
@@ -50,17 +50,17 @@ public class Pedido {
         this.fechaPedido = fechaPedido;
     }
 
-    public ArrayList<LíneaPedido> getCestaCompra() {
+    public ArrayList<LineaPedido> getCestaCompra() {
         return cestaCompra;
     }
 
-    public void setCestaCompra(ArrayList<LíneaPedido> cestaCompra) {
+    public void setCestaCompra(ArrayList<LineaPedido> cestaCompra) {
         this.cestaCompra = cestaCompra;
     }
 
     @Override
     public String toString() {
-        return "Pedido{" + "idPedido=" + idPedido + ", clientePedido=" + clientePedido + ", fechaPedido=" + fechaPedido + ", cestaCompra=" + cestaCompra + '}';
+        return idPedido + " - " + clientePedido + " - " + fechaPedido + " - " + cestaCompra + '}';
     }
     
     
