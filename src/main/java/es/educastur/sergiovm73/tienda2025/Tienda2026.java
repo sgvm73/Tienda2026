@@ -35,7 +35,9 @@ public class Tienda2026 {
         t.cargaDatos();
         t.menu();
     }
+    //<editor-fold defaultstate="collapsed" desc="cargaDatos">
     
+
     public void cargaDatos(){
        clientes.put("80580845T",new Cliente("80580845T","ANA ","658111111","ana@gmail.com"));
        clientes.put("36347775R",new Cliente("36347775R","LOLA","649222222","lola@gmail.com"));
@@ -64,31 +66,238 @@ public class Tienda2026 {
        pedidos.add(new Pedido("63921307Y-001/2025",clientes.get("63921307Y"),hoy.minusDays(4), new ArrayList<>
         (List.of(new LineaPedido("2-11",5),new LineaPedido("2-33",3),new LineaPedido("4-33",2)))));
 }
+    //</editor-fold>
     
+//<editor-fold defaultstate="collapsed" desc="Menus">
     
-    
+
     public void menu(){
         
+int opcion;
+        do{
+            System.out.println("\n\n\n\n\n\t\t\t\tMENU DE OPCIONES\n");
+            System.out.println("\t\t\t\t1 - ARTICULOS");
+            System.out.println("\t\t\t\t2 - CLIENTES");
+            System.out.println("\t\t\t\t3 - PEDIDOS");
+           
+
+ 
+            System.out.println("\t\t\t\t9 - SALIR");
+            
+            opcion=sc.nextInt();
+            sc.nextLine();      
+            switch (opcion){
+                case 1:{
+                    menuArticulos();
+                    break;
+                }    
+                case 2:{
+                    menuClientes();
+                    break;
+                } 
+                case 3:{
+                    menuPedidos();
+                    break;
+                } 
+                
+               
+            }
+        }while (opcion != 9 );
+}
+    
+    
+    
+    
+    public void menuArticulos(){
+        
+        int opcion;
+        do{
+            System.out.println("\n\n\n\n\n\t\t\t\tMENU DE OPCIONES\n");
+            System.out.println("\t\t\t\t1 - ALTA");
+            System.out.println("\t\t\t\t2 - BAJA");
+            System.out.println("\t\t\t\t3 - REPOSICIÓN");
+            System.out.println("\t\t\t\t4 - LISTADOS");
+            
+ 
+            System.out.println("\t\t\t\t9 - SALIR");
+            
+            opcion=sc.nextInt();
+            sc.nextLine();      
+            switch (opcion){
+                case 1:{
+                    altaArticulos();
+                    break;
+                }    
+                case 2:{
+                    bajaArticulos();
+                    break;
+                } 
+                case 3:{
+                    reposicionArticulos();
+                    break;
+                } 
+                case 4:{
+                    listarArticulos();
+                    break;
+                } 
+                
+               
+            }
+        }while (opcion != 9 );
         
         
-        for(Articulo a : articulos.values()){
-            System.out.println(a);
-            
-        }
-        
-        System.out.println("");
-        for (Cliente c : clientes.values()){
-            System.out.println(c);
-            
-        }
-        System.out.println("");
-        for (String dni : clientes.keySet()){
-            System.out.println(dni);
-        }
-        for (Pedido p:pedidos){
-            System.out.println(p);
-            
     }
     
-}
+    
+    public void menuClientes(){
+        
+        int opcion;
+        do{
+            System.out.println("\n\n\n\n\n\t\t\t\tMENU DE OPCIONES\n");
+            System.out.println("\t\t\t\t1 - ALTA");
+            System.out.println("\t\t\t\t2 - BAJA");
+            System.out.println("\t\t\t\t3 - MODIFICACIÓN DATOS");
+            System.out.println("\t\t\t\t4 - LISTADOS");
+            
+ 
+            System.out.println("\t\t\t\t9 - SALIR");
+            
+            opcion=sc.nextInt();
+            sc.nextLine();      
+            switch (opcion){
+                case 1:{
+                    altaClientes();
+                    break;
+                }    
+                case 2:{
+                    bajaClientes();
+                    break;
+                } 
+                case 3:{
+                    modificarClientes();
+                    break;
+                } 
+                case 4:{
+                    listarClientes();
+                    break;
+                } 
+                
+               
+            }
+        }while (opcion != 9 );
+        
+        
+    }
+    
+    
+    public void menuPedidos(){
+        
+        int opcion;
+        do{
+            System.out.println("\n\n\n\n\n\t\t\t\tMENU DE OPCIONES\n");
+            System.out.println("\t\t\t\t1 - NUEVO PEDIDO");
+            System.out.println("\t\t\t\t2 - LISTADO DE PEDIDOS");
+            
+            
+ 
+            System.out.println("\t\t\t\t9 - SALIR");
+            
+            opcion=sc.nextInt();
+            sc.nextLine();      
+            switch (opcion){
+                case 1:{
+                    nuevoPedido();
+                    break;
+                }
+                case 2:{
+                    listadoPedido();
+                    break;
+                } 
+                
+               
+            }
+        }while (opcion != 9 );
+        
+        
+    }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Articulos">
+    
+
+    private void altaArticulos(){
+     String idArticulo,descripcion,existencias,pvp;
+     
+     sc.nextLine();
+        System.out.println("ALTA DE NUEVO ARTICULO");
+        idArticulo=sc.next();
+        do{
+            System.out.println("idArticulo (IDENTIFICADO): ");
+            idArticulo=sc.next();
+        }while(!idArticulo.matches("[1-6][-][0-9][0-9]") || articulos.containsKey(idArticulo));
+        System.out.println("DESCRIPCION");
+        descripcion=sc.nextLine();
+        
+        do{
+            System.out.println("EXISTENCIAS:");
+            existencias=sc.next();
+        }while(!MetodosAux.esInt(existencias));
+        
+        do{
+            System.out.println("PVP: ");
+            pvp=sc.next();
+        }while(!MetodosAux.esDouble(pvp));
+       
+        Articulo a = new Articulo(idArticulo, descripcion, Integer.parseInt(existencias), Double.parseDouble(pvp));
+        articulos.put(idArticulo, a);
+        
+        System.out.println("- Articulo añadido -");
+    }
+    private void bajaArticulos(){
+        
+    }
+    private void reposicionArticulos(){
+        
+    }
+    private void listarArticulos(){
+        System.out.println("");
+        for (Articulo a:articulos.values()){
+            System.out.println(a);
+        }
+            
+    }
+    //</editor-fold>
+    //<editor-fold defaultstate="collapsed" desc="Clientes">
+    
+
+    private void altaClientes(){
+        
+    }
+    private void bajaClientes(){
+        
+    }
+    private void modificarClientes(){
+        
+    }
+    private void listarClientes(){
+        System.out.println("");
+        for (Cliente c:clientes.values()){
+            System.out.println(c);  
+        }
+    }
+    //</editor-fold>
+    //<editor-fold defaultstate="collapsed" desc="Pedido">
+    
+
+    private void nuevoPedido(){
+        
+    }
+    private void listadoPedido(){
+        System.out.println("");
+        for (Pedido p:pedidos){
+            System.out.println(p);
+        }
+    }
+    
+    //</editor-fold>
 }
