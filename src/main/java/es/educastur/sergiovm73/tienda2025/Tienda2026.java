@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
+import javax.swing.plaf.metal.MetalIconFactory;
+import org.w3c.dom.html.HTMLFontElement;
 
 /**
  *
@@ -35,6 +37,8 @@ public class Tienda2026 {
         t.cargaDatos();
         t.menu();
     }
+    
+    //para ordenar por carpetas usar "fcom" + tab
     //<editor-fold defaultstate="collapsed" desc="cargaDatos">
     
 
@@ -49,6 +53,7 @@ public class Tienda2026 {
        articulos.put("2-11",new Articulo("2-11","HDD SEAGATE 1 TB  ",16,80));
        articulos.put("2-22",new Articulo("2-22","SSD KINGSTOM 256GB",9,70));
        articulos.put("2-33",new Articulo("2-33","SSD KINGSTOM 512GB",0,200));
+       articulos.put("3-11",new Articulo("3-22","HP LASERJET HP800 ",2,200));
        articulos.put("3-22",new Articulo("3-22","EPSON PRINT XP300 ",5,80));
        articulos.put("4-11",new Articulo("4-11","ASUS  MONITOR  22 ",5,100));
        articulos.put("4-22",new Articulo("4-22","HP MONITOR LED 28 ",5,180));
@@ -291,6 +296,29 @@ int opcion;
 
     private void nuevoPedido(){
         
+        String idCliente;
+        do{
+            System.out.println("DNI CLIENTE: ");
+            idCliente=sc.nextLine().toUpperCase();
+        }while (!MetodosAux.validarDNI(idCliente));
+        
+         ArrayList <LineaPedido> cestaCompra= new ArrayList();
+         String idArticulo;
+         int unidades=0;
+         do{
+            
+             System.out.println("\nTeclea el ID del articulo deseado (FIN para terminar la compra)");
+             idArticulo=sc.nextLine();
+             System.out.println("\nTeclea las unidades deseadas: ");
+             unidades=sc.nextInt();
+             cestaCompra.add(new LineaPedido(idArticulo, unidades));
+             
+             
+         }while (!idArticulo.equalsIgnoreCase("FIN"));
+        
+        Pedido p=new Pedido(generaIdPedido(idCliente),clientes.get(idCliente), LocalDate.now(), cestaCompra);
+        pedidos.add(p);
+        
     }
     private void listadoPedido(){
         System.out.println("");
@@ -299,5 +327,26 @@ int opcion;
         }
     }
     
+    public String generaIdPedido (String idCliente){
+        
+        int contador =0;
+        String nuevoId; //variable string para ir construyendo un nuevo idpedido
+        for (Pedido p: pedidos){
+            if (p.getClientePedido().getIdCliente().equalsIgnoreCase(idCliente)){
+                contador++;
+            }
+            //hemos calculado en la variable contador cuantos pedidos tiene el cliente
+        }
+        contador++; //sumamos a contador 1 para el nuevo pedido
+        nuevoId=idCliente +"-"+String.format("%03d", contador) + "/"+LocalDate.now().getYear();
+        return nuevoId;
+        
+    }
+    
     //</editor-fold>
+    
+    
+    
+ 
+         
 }
