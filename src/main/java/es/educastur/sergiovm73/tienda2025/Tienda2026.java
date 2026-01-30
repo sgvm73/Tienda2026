@@ -204,6 +204,7 @@ int opcion;
             System.out.println("\t\t\t\t2 - LISTADO DE PEDIDOS");
             
             
+            
  
             System.out.println("\t\t\t\t9 - SALIR");
             
@@ -218,6 +219,7 @@ int opcion;
                     listadoPedido();
                     break;
                 } 
+
                 
                
             }
@@ -292,55 +294,94 @@ int opcion;
     }
     //</editor-fold>
     //<editor-fold defaultstate="collapsed" desc="Pedido">
-    
-
-    private void nuevoPedido(){
-        
-        String idCliente;
-        do{
-            System.out.println("DNI CLIENTE: ");
-            idCliente=sc.nextLine().toUpperCase();
-        }while (!MetodosAux.validarDNI(idCliente));
-        
-         ArrayList <LineaPedido> cestaCompra= new ArrayList();
-         String idArticulo;
-         int unidades=0;
-         do{
-            
-             System.out.println("\nTeclea el ID del articulo deseado (FIN para terminar la compra)");
-             idArticulo=sc.nextLine();
-             System.out.println("\nTeclea las unidades deseadas: ");
-             unidades=sc.nextInt();
-             cestaCompra.add(new LineaPedido(idArticulo, unidades));
-             
-             
-         }while (!idArticulo.equalsIgnoreCase("FIN"));
-        
-        Pedido p=new Pedido(generaIdPedido(idCliente),clientes.get(idCliente), LocalDate.now(), cestaCompra);
-        pedidos.add(p);
-        
-    }
-    private void listadoPedido(){
+private void listadoPedido(){
         System.out.println("");
         for (Pedido p:pedidos){
             System.out.println(p);
         }
     }
     
-    public String generaIdPedido (String idCliente){
-        
-        int contador =0;
-        String nuevoId; //variable string para ir construyendo un nuevo idpedido
+    private String generaIdPedido(String idCliente){ 
+        String nuevoId; //vble String para ir construyendo un nuevo idPedido
+         //Calculamos en la vble contador cuantos pedidos tiene el cliente aportado
+        int contador = 0;  
         for (Pedido p: pedidos){
             if (p.getClientePedido().getIdCliente().equalsIgnoreCase(idCliente)){
                 contador++;
             }
-            //hemos calculado en la variable contador cuantos pedidos tiene el cliente
         }
         contador++; //sumamos a contador 1 para el nuevo pedido
-        nuevoId=idCliente +"-"+String.format("%03d", contador) + "/"+LocalDate.now().getYear();
+        nuevoId= idCliente + "-" + String.format("%03d", contador) + "/" + LocalDate.now().getYear();
         return nuevoId;
+    }
+    
+    private void stock (String idArticulo, int unidades) throws StockCero, StockInsuficiente {
+        if (articulos.get(idArticulo).getExistencias()==0){
+            throw new StockCero("0 unidades disponibles de: " 
+                    + articulos.get(idArticulo).getDescripcion());
+        }
+        if (articulos.get(idArticulo).getExistencias() < unidades){
+            throw new StockInsuficiente("Sólo hay" + articulos.get(idArticulo).getExistencias() 
+                    + "unidades disponibles de: " + articulos.get(idArticulo).getDescripcion());
+        }
+    }
+    
+    private void nuevoPedido() {
         
+        String idCliente;
+        do{
+            System.out.println("DNI (id) CLIENTE:");
+            idCliente=sc.nextLine().toUpperCase();
+            if (!clientes.containsKey(idCliente)){
+                System.out.println("No es cliente de la tienda."
+                        + " Desea darse de alta o compra como invitado");
+            }
+        }while (!MetodosAux.validarDNI(idCliente));
+        
+        ArrayList <LineaPedido> cestaCompra =new ArrayList();
+        String idArticulo;
+        int unidades=0;
+        System.out.print("\nTecle el ID del artículo deseado (FIN para terminar la compra)");
+        idArticulo=sc.next();
+        while (!idArticulo.equalsIgnoreCase("FIN")){
+            System.out.print("\nTeclea las unidades deseadas: ");
+            unidades=sc.nextInt();
+
+            try {
+                stock(idArticulo, unidades);
+                cestaCompra.add(new LineaPedido(idArticulo,unidades));
+            } catch (StockCero ex) {
+                System.out.println(ex.getMessage());
+            } catch (StockInsuficiente ex) {
+                System.out.println(ex.getMessage());
+                System.out.println("Las quieres (SI/NO)");
+                String respuesta=sc.next();
+                if (respuesta.equalsIgnoreCase("SI")){
+                    cestaCompra.add(new LineaPedido(idArticulo,articulos.get(idArticulo).getExistencias()));
+                }
+            }
+            System.out.print("\nTeclee el ID del artículo deseado (FIN para terminar la compra)");
+            idArticulo=sc.next();
+        }
+        if (!cestaCompra.isEmpty()){
+            System.out.println("Este es tu pedido");
+            for (LineaPedido l:cestaCompra){
+                System.out.println( l.getIdArticulo()+"-"+articulos.get(l.getIdArticulo()).getDescripcion() + " - " + l.getUnidades() );
+            }
+            System.out.println("Procedemos con la compra (SI/NO) "); 
+            String respuesta=sc.next();
+            if (respuesta.equalsIgnoreCase("SI")){
+                pedidos.add(new Pedido(generaIdPedido(idCliente), clientes.get(idCliente),
+                LocalDate.now(), cestaCompra));
+                for (LineaPedido l:cestaCompra){
+                    articulos.get(l.getIdArticulo()).setExistencias(articulos.get(l.getIdArticulo()).getExistencias()-l.getUnidades());
+                }
+            }
+        }
+        
+        
+        
+                
     }
     
     //</editor-fold>
