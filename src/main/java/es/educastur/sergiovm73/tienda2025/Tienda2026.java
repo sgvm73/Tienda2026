@@ -377,12 +377,9 @@ private void listadoPedido(){
                     articulos.get(l.getIdArticulo()).setExistencias(articulos.get(l.getIdArticulo()).getExistencias()-l.getUnidades());
                 }
             }
-        }
-        
-        
-        
-                
+        }         
     }
+    
     
     //</editor-fold>
     
