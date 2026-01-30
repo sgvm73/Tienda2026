@@ -6,6 +6,7 @@ package es.educastur.sergiovm73.tienda2025;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
@@ -202,6 +203,8 @@ int opcion;
             System.out.println("\n\n\n\n\n\t\t\t\tMENU DE OPCIONES\n");
             System.out.println("\t\t\t\t1 - NUEVO PEDIDO");
             System.out.println("\t\t\t\t2 - LISTADO DE PEDIDOS");
+            System.out.println("\t\t\t\t3 - ");
+            
             
             
             
@@ -219,6 +222,11 @@ int opcion;
                     listadoPedido();
                     break;
                 } 
+                case 3:{
+                    
+                    break;
+                }
+                
 
                 
                
@@ -297,8 +305,12 @@ int opcion;
 private void listadoPedido(){
         System.out.println("");
         for (Pedido p:pedidos){
-            System.out.println(p);
+            System.out.println(p +"- Total:"+totalPedido(p));
+          
+       
         }
+        System.out.println("\n");
+        pedidos.stream().sorted(Comparator.comparing(p->totalPedido(p))).forEach(p->System.out.println(p + "- Total: "+totalPedido(p)));
     }
     
     private String generaIdPedido(String idCliente){ 
@@ -321,8 +333,8 @@ private void listadoPedido(){
                     + articulos.get(idArticulo).getDescripcion());
         }
         if (articulos.get(idArticulo).getExistencias() < unidades){
-            throw new StockInsuficiente("Sólo hay" + articulos.get(idArticulo).getExistencias() 
-                    + "unidades disponibles de: " + articulos.get(idArticulo).getDescripcion());
+            throw new StockInsuficiente("Sólo hay " + articulos.get(idArticulo).getExistencias() 
+                    + " unidades disponibles de: " + articulos.get(idArticulo).getDescripcion());
         }
     }
     
@@ -365,9 +377,14 @@ private void listadoPedido(){
         }
         if (!cestaCompra.isEmpty()){
             System.out.println("Este es tu pedido");
+            double totalPedido=0;
+            double totalLinea=0;
             for (LineaPedido l:cestaCompra){
-                System.out.println( l.getIdArticulo()+"-"+articulos.get(l.getIdArticulo()).getDescripcion() + " - " + l.getUnidades() );
+                totalLinea=l.getUnidades()*articulos.get(l.getIdArticulo()).getPvp();
+                 totalPedido+=totalLinea;       
+                System.out.println( l.getIdArticulo()+"-"+articulos.get(l.getIdArticulo()).getDescripcion() + " - " + l.getUnidades() + " - " + articulos.get(l.getIdArticulo()).getPvp() + " - "  + totalLinea)  ;
             }
+            System.out.println("\t\t\t\tTotal: " + totalPedido);
             System.out.println("Procedemos con la compra (SI/NO) "); 
             String respuesta=sc.next();
             if (respuesta.equalsIgnoreCase("SI")){
@@ -381,6 +398,25 @@ private void listadoPedido(){
     }
     
     
+    private double totalPedido (Pedido p){
+        
+        
+        double totalPedido=0;
+        for (LineaPedido l: p.getCestaCompra()){
+            
+             totalPedido+=l.getUnidades()*articulos.get(l.getIdArticulo()).getPvp();
+             
+            
+        }
+        return totalPedido;
+
+       
+    }
+    //ordenar los pedidos por total de mayor a menos y viceversa cons streams
+
+   
+    
+            
     //</editor-fold>
     
     
