@@ -48,7 +48,16 @@ public class Tienda2026 {
        clientes.put("36347775R",new Cliente("36347775R","LOLA","649222222","lola@gmail.com"));
        clientes.put("63921307Y",new Cliente("63921307Y","JUAN","652333333","juan@gmail.com"));
        clientes.put("02337565Y",new Cliente("02337565Y","EDU","634567890","edu@gmail.com"));
+              //put es keyset y new... es .value
               
+              /*TODOS LOS .STREAM: 
+              
+              .filter()
+              .sorted()
+              .forEach(a->System.out.println(a))
+              
+
+*/
        articulos.put("1-11",new Articulo("1-11","RATON LOGITECH ST ",14,15));
        articulos.put("1-22",new Articulo("1-22","TECLADO STANDARD  ",9,18));
        articulos.put("2-11",new Articulo("2-11","HDD SEAGATE 1 TB  ",16,80));
@@ -279,6 +288,20 @@ int opcion;
         for (Articulo a:articulos.values()){
             System.out.println(a);
         }
+        
+        
+        //pasar los articulos a arraylist:
+        
+        ArrayList<Articulo> articulosAux = new ArrayList(articulos.values());
+        System.out.println("");
+        articulosAux.stream().forEach(a->System.out.println(a));
+        
+        
+        ArrayList<Articulo> articulosAux2 = new ArrayList(articulosAux);
+        System.out.println("");
+        articulosAux2.stream().forEach(a->System.out.println(a));
+
+        
             
     }
     //</editor-fold>
@@ -310,7 +333,11 @@ private void listadoPedido(){
        
         }
         System.out.println("\n");
+        System.out.println("Pedidos de menor a mayor");
         pedidos.stream().sorted(Comparator.comparing(p->totalPedido(p))).forEach(p->System.out.println(p + "- Total: "+totalPedido(p)));
+        
+                pedidos.stream().filter(p->totalPedido(p)>1000).sorted(Comparator.comparing(p->totalPedido(p))).forEach(p->System.out.println(p + "- Total: "+totalPedido(p)));
+
     }
     
     private String generaIdPedido(String idCliente){ 

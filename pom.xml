@@ -11,4 +11,24 @@
         <exec.mainClass>es.educastur.sergiovm73.tienda2025.Tienda2025</exec.mainClass>
     </properties>
     <name>Tienda2026</name>
+    <dependencies>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.10.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>5.10.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.10.3</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>
