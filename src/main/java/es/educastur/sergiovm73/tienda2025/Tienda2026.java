@@ -10,8 +10,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
-import javax.swing.plaf.metal.MetalIconFactory;
-import org.w3c.dom.html.HTMLFontElement;
+
 
 /**
  *
@@ -29,6 +28,7 @@ public class Tienda2026 {
         pedidos=new ArrayList();
         clientes=new HashMap();
         articulos=new HashMap();
+        
     }
 
     public static void main(String[] args) {
@@ -36,7 +36,9 @@ public class Tienda2026 {
         
         Tienda2026 t = new Tienda2026();
         t.cargaDatos();
-        t.menu();
+        
+        t.cinco();
+        //t.menu();
     }
     
     //para ordenar por carpetas usar "fcom" + tab
@@ -68,7 +70,6 @@ public class Tienda2026 {
        articulos.put("4-11",new Articulo("4-11","ASUS  MONITOR  22 ",5,100));
        articulos.put("4-22",new Articulo("4-22","HP MONITOR LED 28 ",5,180));
        articulos.put("4-33",new Articulo("4-33","SAMSUNG ODISSEY G5",12,580));
-       
        LocalDate hoy = LocalDate.now();
        pedidos.add(new Pedido("80580845T-001/2025",clientes.get("80580845T"),hoy.minusDays(1), new ArrayList<>
         (List.of(new LineaPedido("1-11",3),new LineaPedido("4-22",3)))));                                                                                                                                                               
@@ -98,6 +99,7 @@ int opcion;
 
  
             System.out.println("\t\t\t\t9 - SALIR");
+            
             
             opcion=sc.nextInt();
             sc.nextLine();      
@@ -446,7 +448,136 @@ private void listadoPedido(){
             
     //</editor-fold>
     
+    //<editor-fold defaultstate="collapsed" desc="Examen">
     
+    private void uno (){
+        
+        String seccion;
+        System.out.println("\nSeccion a listar:");
+        seccion=sc.next();
+        System.out.println("Articulos de la sección");
+        for (Articulo a:articulos.values()){
+            
+            if(a.getIdArticulo().startsWith(seccion)){
+                
+                System.out.println(a);
+            }
+        }
+        
+    
+    }
+     private void dos (){
+         
+         int contador1=0;
+         int contador2=0;
+         int contador3=0;
+         int contador4=0;
+        
+         for (Articulo a: articulos.values()){
+             if (a.getIdArticulo().startsWith("1")){
+                 if(contador1==0){
+                 System.out.println("PERIFERICOS");
+                 contador1=contador1+1;
+}
+                 System.out.println(a);
+                 
+                 
+             }
+            if(a.getIdArticulo().startsWith("2")){
+                if(contador2==0){
+                System.out.println("ALMACENAMIENTO");
+                contador2=contador2+1;
+                }
+                System.out.println(a);
+                
+                 
+                     }
+            if(a.getIdArticulo().startsWith("3")){ 
+                if(contador3==0){
+                System.out.println("IMPRESORAS");
+                contador3=contador3+1;
+                }
+                System.out.println(a);
+                
+                 
+                     }
+            if(a.getIdArticulo().startsWith("4")){ 
+                if(contador4==0){
+                System.out.println("MONITORES");
+                contador4=contador4+1;
+                }
+                System.out.println(a);
+                
+                 
+                     }
+             
+         }
+         
+         
+    }
+      private void tres (){
+          System.out.println("Intoduce el DNI del cliente: ");
+          String dni=sc.next().toUpperCase();
+          
+          for(Pedido p:pedidos){
+              if(p.getClientePedido().getIdCliente().equals(dni)){
+                  
+                  System.out.println(p+" - "+"Total: "+totalPedido(p));
+                  
+                                     
+   
+                
+              }
+          }
+     
+    }
+      
+      private int unidadesVendidas (String idArticulo){
+          int total=0;
+          
+          for (Pedido p:pedidos){
+              for (LineaPedido l: p.getCestaCompra()){
+                  if(l.getIdArticulo().equalsIgnoreCase(idArticulo)){
+                      total+=l.getUnidades();
+                  }
+              }
+          }
+          return total;
+      }
+       private void cuatro (){
+           System.out.println("LISTADO ARTICULOS - UNIDADES VENDIDAS:");
+           System.out.println("");
+           ArrayList<Articulo> listaArticulos= new ArrayList<>(articulos.values());
+           
+           listaArticulos.stream().sorted(Comparator.comparing((Articulo a)->unidadesVendidas(a.getIdArticulo())).reversed()).forEach(a-> System.out.println(a.getDescripcion() + " VENDIDAS: "+unidadesVendidas(a.getIdArticulo())));
+    }
+        private void cinco (){
+            
+            ArrayList<Cliente> clientesSinPedido = new ArrayList<>();
+            
+            
+            for (Cliente c : clientes.values()){
+                boolean tienePedido = false;
+                
+                
+                for (Pedido p:pedidos){
+                    if(p.getClientePedido().getIdCliente().equalsIgnoreCase(c.getIdCliente())){
+                        tienePedido =true;
+                        break;
+                    }
+                }
+                if (!tienePedido){
+                    clientesSinPedido.add(c);
+                }
+               
+            }
+            System.out.println("Listado clientes sin pedido:");
+            System.out.println(clientesSinPedido);
+        
+    }
+    
+//</editor-fold>
+  
     
  
          
