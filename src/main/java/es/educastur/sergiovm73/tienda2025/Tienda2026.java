@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * @author 1dawd24
  */
 public class Tienda2026 {
-    private ArrayList <LineaPedido> LineaPedido=new ArrayList();
+
     private ArrayList <Pedido> pedidos;
     private Scanner sc=new Scanner(System.in);
     private HashMap <String, Articulo> articulos;
@@ -628,11 +628,59 @@ private void listadoPedido(){
                 System.out.println(numPedidosPorCliente);
         
         System.out.println("\n\nTOTAL DE VENTAS POR PRODUCTO (groupingBy)");
+        
+        System.out.println("\n\n");
+        for (Cliente c : clientes.values()) { /*Antes de bajar al flatmap, hacemos un filter.
+                                                Si queremos pasar a LineaPedido tenemos que 
+                                                hacer desde el ArrayList pedidos el flatMap.*/
+            int unidades = pedidos.stream().filter(p -> p.getClientePedido().equals(c))
+                    .flatMap(p -> p.getCestaCompra().stream()).filter(lp -> lp.getArticulo().equals(c)) //el ultimo c no es correcto, es otra variable
+                    .mapToInt(LineaPedido::getUnidades).sum();
+        }
+        
+        System.out.println("\n\nTODOS LOS ARTICULOS VENDIDOS");
+        /*En este listado no hay repeticiones gracias al toSet, que quita todas las repeticiones
+        que hayan.*/
+        pedidos.stream().flatMap(p -> p.getCestaCompra().stream())
+                .map(LineaPedido::getArticulo)
+                .collect(Collectors.toSet());
     }
+    //</editor-fold>
+    
+    //<editor-fold defaultstate="collapsed" desc="Unidades Vendidas">
+    
+    private int unidadesVendidas1(Articulo a){
+        int c=0;
+            for (Pedido p : pedidos) {
+                for (LineaPedido l:p.getCestaCompra()){
+               if(l.getArticulo().equals(a)){
+                   c+=l.getUnidades();
+               }
+            }
+            }
+        return c;
+    }
+    
+        private int unidadesVendidas2(Articulo a){
+        int total = 0;
+            for (Pedido p : pedidos) {
+                total += p.getCestaCompra().stream().filter(l->l.getArticulo().equals(a))
+                        .mapToInt(LineaPedido::getUnidades).sum();
+            }
+        return total;
+    }
+    
+    private int unidadesVendidas3(Articulo a){
+    return pedidos.stream()
+            .flatMap(p -> p.getCestaCompra().stream())
+            .filter(l -> l.getArticulo().equals(a))
+            .mapToInt(LineaPedido::getUnidades)
+            .sum();
+}
 //</editor-fold>
     
   
-    
+        
  
          
 }

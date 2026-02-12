@@ -12,12 +12,10 @@ import java.util.ArrayList;
  * @author 1dawd24
  */
 public class Pedido {
-    
-    
     private String idPedido;
     private Cliente clientePedido;
     private LocalDate fechaPedido;
-    private ArrayList <LineaPedido>cestaCompra;
+    private ArrayList <LineaPedido> cestaCompra;
 
     public Pedido(String idPedido, Cliente clientePedido, LocalDate fechaPedido, ArrayList<LineaPedido> cestaCompra) {
         this.idPedido = idPedido;
@@ -26,11 +24,11 @@ public class Pedido {
         this.cestaCompra = cestaCompra;
     }
 
-    public String getIdPedido() {
+    public String getIDpedido() {
         return idPedido;
     }
 
-    public void setIdPedido(String idPedido) {
+    public void setIDpedido(String IDpedido) {
         this.idPedido = idPedido;
     }
 
@@ -60,14 +58,6 @@ public class Pedido {
 
     @Override
     public String toString() {
-        return idPedido + " - " + clientePedido + " - " + fechaPedido + " - " + cestaCompra + '}';
+        return idPedido + " - " + clientePedido + " - " + fechaPedido + " - " + cestaCompra;
     }
-    
-    
-    
-    
-
-    
-    
-    
 }
