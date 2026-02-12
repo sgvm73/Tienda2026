@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 
 /**
@@ -31,6 +33,11 @@ public class Tienda2026 {
         
     }
 
+    public ArrayList<Pedido> getPedidos() {
+        return pedidos;
+    }
+    
+
     public static void main(String[] args) {
         
         
@@ -46,10 +53,7 @@ public class Tienda2026 {
     
 
     public void cargaDatos(){
-       clientes.put("80580845T",new Cliente("80580845T","ANA ","658111111","ana@gmail.com"));
-       clientes.put("36347775R",new Cliente("36347775R","LOLA","649222222","lola@gmail.com"));
-       clientes.put("63921307Y",new Cliente("63921307Y","JUAN","652333333","juan@gmail.com"));
-       clientes.put("02337565Y",new Cliente("02337565Y","EDU","634567890","edu@gmail.com"));
+       
               //put es keyset y new... es .value
               
               /*TODOS LOS .STREAM: 
@@ -60,28 +64,30 @@ public class Tienda2026 {
               
 
 */
-       articulos.put("1-11",new Articulo("1-11","RATON LOGITECH ST ",14,15));
-       articulos.put("1-22",new Articulo("1-22","TECLADO STANDARD  ",9,18));
-       articulos.put("2-11",new Articulo("2-11","HDD SEAGATE 1 TB  ",16,80));
-       articulos.put("2-22",new Articulo("2-22","SSD KINGSTOM 256GB",9,70));
-       articulos.put("2-33",new Articulo("2-33","SSD KINGSTOM 512GB",0,200));
-       articulos.put("3-11",new Articulo("3-22","HP LASERJET HP800 ",2,200));
-       articulos.put("3-22",new Articulo("3-22","EPSON PRINT XP300 ",5,80));
-       articulos.put("4-11",new Articulo("4-11","ASUS  MONITOR  22 ",5,100));
-       articulos.put("4-22",new Articulo("4-22","HP MONITOR LED 28 ",5,180));
-       articulos.put("4-33",new Articulo("4-33","SAMSUNG ODISSEY G5",12,580));
-       LocalDate hoy = LocalDate.now();
-       pedidos.add(new Pedido("80580845T-001/2025",clientes.get("80580845T"),hoy.minusDays(1), new ArrayList<>
-        (List.of(new LineaPedido("1-11",3),new LineaPedido("4-22",3)))));                                                                                                                                                               
-       pedidos.add(new Pedido("80580845T-002/2025",clientes.get("80580845T"),hoy.minusDays(2), new ArrayList<>
-        (List.of(new LineaPedido("4-11",3),new LineaPedido("4-22",2),new LineaPedido("4-33",4)))));
-       pedidos.add(new Pedido("36347775R-001/2025",clientes.get("36347775R"),hoy.minusDays(3), new ArrayList<>
-        (List.of(new LineaPedido("4-22",1),new LineaPedido("2-22",3)))));
-       pedidos.add(new Pedido("36347775R-002/2025",clientes.get("36347775R"),hoy.minusDays(5), new ArrayList<>
-        (List.of(new LineaPedido("4-33",3),new LineaPedido("2-11",3)))));
-       pedidos.add(new Pedido("63921307Y-001/2025",clientes.get("63921307Y"),hoy.minusDays(4), new ArrayList<>
-        (List.of(new LineaPedido("2-11",5),new LineaPedido("2-33",3),new LineaPedido("4-33",2)))));
-}
+
+        clientes.put("80580845T", new Cliente("80580845T", "ANA ", "658111111", "ana@gmail.com"));
+        clientes.put("36347775R", new Cliente("36347775R", "LOLA", "649222222", "lola@gmail.com"));
+        clientes.put("63921307Y", new Cliente("63921307Y", "JUAN", "652333333", "juan@gmail.com"));
+        clientes.put("02337565Y", new Cliente("02337565Y", "EDU", "634567890", "edu@gmail.com"));
+
+        articulos.put("1-11", new Articulo("1-11", "RATON LOGITECH ST ", 0, 15));
+        articulos.put("1-22", new Articulo("1-22", "TECLADO STANDARD  ", 5, 18));
+        articulos.put("2-11", new Articulo("2-11", "HDD SEAGATE 1 TB  ", 15, 80));
+        articulos.put("2-22", new Articulo("2-22", "SSD KINGSTOM 256GB", 9, 70));
+        articulos.put("2-33", new Articulo("2-33", "SSD KINGSTOM 512GB", 0, 200));
+        articulos.put("3-11", new Articulo("3-11", "HP LASERJET HP800 ", 2, 200));
+        articulos.put("3-22", new Articulo("3-22", "EPSON PRINT XP300 ", 5, 80));
+        articulos.put("4-11", new Articulo("4-11", "ASUS  MONITOR  22 ", 5, 100));
+        articulos.put("4-22", new Articulo("4-22", "HP MONITOR LED 28 ", 5, 180));
+        articulos.put("4-33", new Articulo("4-33", "SAMSUNG ODISSEY G5", 12, 580));
+
+        LocalDate hoy = LocalDate.now();
+        pedidos.add(new Pedido("80580845T-001/2025", clientes.get("80580845T"), hoy.minusDays(1), new ArrayList<>(List.of(new LineaPedido(articulos.get("1-11"), 3), new LineaPedido(articulos.get("4-22"), 3)))));
+        pedidos.add(new Pedido("80580845T-002/2025", clientes.get("80580845T"), hoy.minusDays(2), new ArrayList<>(List.of(new LineaPedido(articulos.get("4-11"), 3), new LineaPedido(articulos.get("4-22"), 2), new LineaPedido(articulos.get("4-33"), 4)))));
+        pedidos.add(new Pedido("36347775R-001/2025", clientes.get("36347775R"), hoy.minusDays(3), new ArrayList<>(List.of(new LineaPedido(articulos.get("4-22"), 1), new LineaPedido(articulos.get("2-22"), 3)))));
+        pedidos.add(new Pedido("36347775R-002/2025", clientes.get("36347775R"), hoy.minusDays(5), new ArrayList<>(List.of(new LineaPedido(articulos.get("4-33"), 3), new LineaPedido(articulos.get("2-11"), 3)))));
+        pedidos.add(new Pedido("63921307Y-001/2025", clientes.get("63921307Y"), hoy.minusDays(4), new ArrayList<>(List.of(new LineaPedido(articulos.get("2-11"), 5), new LineaPedido(articulos.get("2-33"), 3), new LineaPedido(articulos.get("4-33"), 2)))));
+    }
     //</editor-fold>
     
 //<editor-fold defaultstate="collapsed" desc="Menus">
@@ -383,14 +389,13 @@ private void listadoPedido(){
         String idArticulo;
         int unidades=0;
         System.out.print("\nTecle el ID del artículo deseado (FIN para terminar la compra)");
-        idArticulo=sc.next();
+        idArticulo = sc.next();
         while (!idArticulo.equalsIgnoreCase("FIN")){
             System.out.print("\nTeclea las unidades deseadas: ");
-            unidades=sc.nextInt();
-
+            unidades = sc.nextInt();
             try {
                 stock(idArticulo, unidades);
-                cestaCompra.add(new LineaPedido(idArticulo,unidades));
+                cestaCompra.add(new LineaPedido(articulos.get(idArticulo),unidades));
             } catch (StockCero ex) {
                 System.out.println(ex.getMessage());
             } catch (StockInsuficiente ex) {
@@ -398,7 +403,7 @@ private void listadoPedido(){
                 System.out.println("Las quieres (SI/NO)");
                 String respuesta=sc.next();
                 if (respuesta.equalsIgnoreCase("SI")){
-                    cestaCompra.add(new LineaPedido(idArticulo,articulos.get(idArticulo).getExistencias()));
+                    cestaCompra.add(new LineaPedido(articulos.get(idArticulo),articulos.get(idArticulo).getExistencias()));
                 }
             }
             System.out.print("\nTeclee el ID del artículo deseado (FIN para terminar la compra)");
@@ -406,12 +411,12 @@ private void listadoPedido(){
         }
         if (!cestaCompra.isEmpty()){
             System.out.println("Este es tu pedido");
-            double totalPedido=0;
-            double totalLinea=0;
-            for (LineaPedido l:cestaCompra){
-                totalLinea=l.getUnidades()*articulos.get(l.getIdArticulo()).getPvp();
+            double totalPedido = 0;
+            double totalLinea = 0;
+            for (LineaPedido l : cestaCompra){
+                totalLinea=l.getUnidades()* l.getArticulo().getPvp();
                  totalPedido+=totalLinea;       
-                System.out.println( l.getIdArticulo()+"-"+articulos.get(l.getIdArticulo()).getDescripcion() + " - " + l.getUnidades() + " - " + articulos.get(l.getIdArticulo()).getPvp() + " - "  + totalLinea)  ;
+                System.out.println( l.getArticulo() + " - " + l.getArticulo().getDescripcion() + " - " + l.getUnidades() + " - " + l.getArticulo().getPvp() + " - " + totalLinea);
             }
             System.out.println("\t\t\t\tTotal: " + totalPedido);
             System.out.println("Procedemos con la compra (SI/NO) "); 
@@ -419,21 +424,23 @@ private void listadoPedido(){
             if (respuesta.equalsIgnoreCase("SI")){
                 pedidos.add(new Pedido(generaIdPedido(idCliente), clientes.get(idCliente),
                 LocalDate.now(), cestaCompra));
-                for (LineaPedido l:cestaCompra){
-                    articulos.get(l.getIdArticulo()).setExistencias(articulos.get(l.getIdArticulo()).getExistencias()-l.getUnidades());
+                for (LineaPedido l : cestaCompra){
+                    l.getArticulo().setExistencias(l.getArticulo().getExistencias() - l.getUnidades());
+                    //ANTES: articulos.get(l.getIdArticulo()).setExistencias(articulos.get(l.getIdArticulo()).getExistencias()-l.getUnidades());
                 }
             }
         }         
     }
     
     
-    private double totalPedido (Pedido p){
+    
+    public double totalPedido (Pedido p){
         
         
         double totalPedido=0;
         for (LineaPedido l: p.getCestaCompra()){
             
-             totalPedido+=l.getUnidades()*articulos.get(l.getIdArticulo()).getPvp();
+             totalPedido+=l.getUnidades()*l.getArticulo().getPvp();
              
             
         }
@@ -537,7 +544,7 @@ private void listadoPedido(){
           
           for (Pedido p:pedidos){
               for (LineaPedido l: p.getCestaCompra()){
-                  if(l.getIdArticulo().equalsIgnoreCase(idArticulo)){
+                  if(l.getArticulo().getIdArticulo().equalsIgnoreCase(idArticulo)){
                       total+=l.getUnidades();
                   }
               }
@@ -577,6 +584,53 @@ private void listadoPedido(){
     }
     
 //</editor-fold>
+
+    
+//<editor-fold defaultstate="collapsed" desc="STREAMS">
+    private void listadoStreams(){
+        System.out.println("ARTICULOS DE MENOS DE 100 EUROS POR PRECIO DE - A");
+        articulos.values().stream()
+                .filter(a->a.getPvp()<100)
+                .sorted(Comparator.comparing(a->a.getPvp()))
+                .forEach(a->System.out.println(a));
+        
+        System.out.println("\n\nPEDIDOS ORDENADOS POR IMPORTE TOTAL");
+       /*pedidos.stream()
+                .sorted(Comparator.comparing(p -> totalPedido(p)))
+                .forEach(p->System.out.println(p + "- Total: " totalPedido(p)));*/
+                
+       System.out.println("\n\nPEDIDOS DE MAS DE 1000 EUROS (filter) POR LA FECHA DEL PEDIDO");
+                /*pedidos.stream().filter(p->totalPedido(p)>1000)
+                        .sorted(Comparator.comparing(Pedido::getFechaPedido))
+                        .forEach(p->System.out.println(p + "- Total: " + p.getFechaPedido());*/
+                
+        System.out.println("\n\n\nCONTABILIZAR LOS PEDIDOS DE UN DETERMINADO CLIENTE - PODRIA PEDIR NOMBRE O DNI POR TECLADO");
+        long numPedidos = pedidos.stream()
+                .filter(p -> p.getClientePedido().getIdCliente().equalsIgnoreCase("80580845T"))
+                .count(); //LA VARIABLE COUNT ES PARA CONTABILIZAR LOS PEDIDOS DE UN CLIENTE.
+                System.out.println(numPedidos); //para mostrar por consola el nº de pedidos del cliente
+        
+        //EL ESTILO TRADICIONAL SERÍA:
+        System.out.println("\nCONTABILIZACION AL ESTILO TRADICIONAL:");
+            long numPedidos2 = 0;
+            for (Pedido p : pedidos) {
+                if (p.getClientePedido().getIdCliente().equalsIgnoreCase("80580845T")) {
+                    numPedidos2++;
+                }
+        }
+                System.out.println(numPedidos2);
+            
+            
+        System.out.println("CONTABILIZAR CUANTOS PEDIDOS HAY POR CLIENTE - PARA LAS AGRUPACIONES SON IDEALES");
+        Map <Cliente, Long> numPedidosPorCliente =
+                pedidos.stream()
+                .collect(Collectors.groupingBy(Pedido::getClientePedido, Collectors.counting())); //voy pedido a pedido (Pedido::) y pillo a los clientes y se agrupan.
+                System.out.println(numPedidosPorCliente);
+        
+        System.out.println("\n\nTOTAL DE VENTAS POR PRODUCTO (groupingBy)");
+    }
+//</editor-fold>
+    
   
     
  

@@ -10,20 +10,20 @@ package es.educastur.sergiovm73.tienda2025;
  */
 public class LineaPedido {
     
-    private String idArticulo;
+    private Articulo Articulo;
     private int unidades;
 
-    public LineaPedido(String idArticulo, int unidades) {
-        this.idArticulo = idArticulo;
+    public LineaPedido(Articulo Articulo, int unidades) {
+        this.Articulo = Articulo;
         this.unidades = unidades;
     }
 
-    public String getIdArticulo() {
-        return idArticulo;
+    public Articulo getArticulo() {
+        return Articulo;
     }
 
-    public void setIdArticulo(String idArticulo) {
-        this.idArticulo = idArticulo;
+    public void setArticulo(Articulo Articulo) {
+        this.Articulo = Articulo;
     }
 
     public int getUnidades() {
@@ -33,6 +33,12 @@ public class LineaPedido {
     public void setUnidades(int unidades) {
         this.unidades = unidades;
     }
+
+    @Override
+    public String toString() {
+        return "LineaPedido{" + "Articulo=" + Articulo + ", unidades=" + unidades + '}';
+    }
+
 
     
 

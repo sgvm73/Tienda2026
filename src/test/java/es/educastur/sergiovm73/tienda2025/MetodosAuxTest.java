@@ -41,11 +41,14 @@ public class MetodosAuxTest {
      */
     @Test
     public void testEsInt() {
-        assertTrue(MetodosAux.esInt("5"));
-        assertTrue(MetodosAux.esInt("-5"));
-        assertFalse(MetodosAux.esInt("5.5"));
-        assertFalse(MetodosAux.esInt("dcdjcdc"));
         
+        assertAll(
+        () -> assertTrue(MetodosAux.esInt("5")),
+        () -> assertTrue(MetodosAux.esInt("-5")),
+        () -> assertFalse(MetodosAux.esInt("555555555555555555555555555")),
+        () -> assertFalse(MetodosAux.esInt("5.5")),
+        () -> assertFalse(MetodosAux.esInt("dcdjcdc"))
+        ); 
     }
 
     /**
@@ -53,10 +56,15 @@ public class MetodosAuxTest {
      */
     @Test
     public void testEsDouble() {
-        assertTrue(MetodosAux.esDouble("5"));
-        assertTrue(MetodosAux.esDouble("-5"));
-        assertTrue(MetodosAux.esDouble("5.5"));
-        assertFalse(MetodosAux.esDouble("dcdjcdc"));
+        
+        assertAll(
+        () -> assertTrue(MetodosAux.esDouble("5")),
+        () -> assertTrue(MetodosAux.esDouble("-5")),
+        () -> assertTrue(MetodosAux.esDouble("-555555.5")),
+        () -> assertTrue(MetodosAux.esDouble("5.5")),
+        () -> assertFalse(MetodosAux.esDouble("dcdjcdc"))
+        
+        );
     }
 
     /**
@@ -64,10 +72,16 @@ public class MetodosAuxTest {
      */
     @Test
     public void testValidarDNI() {
-        assertTrue(MetodosAux.validarDNI("80580845T"));
-        assertTrue(MetodosAux.validarDNI("36347775R"));
-        assertFalse(MetodosAux.validarDNI("36347775A"));
-        assertFalse(MetodosAux.validarDNI("80580845P"));
+        
+        
+        assertAll(
+        () -> assertTrue(MetodosAux.validarDNI("80580845T")),
+        () -> assertTrue(MetodosAux.validarDNI("36347775R")),
+        () -> assertFalse(MetodosAux.validarDNI("36347775A")),
+        () -> assertFalse(MetodosAux.validarDNI("3634777A")),
+        () -> assertFalse(MetodosAux.validarDNI("80580845B"))
+        );
     }
+    
     
 }
