@@ -457,7 +457,7 @@ private void listadoPedido(){
     
     //<editor-fold defaultstate="collapsed" desc="Examen">
     
-    private void uno (){
+    private void uno1 (){
         
         String seccion;
         System.out.println("\nSeccion a listar:");
@@ -473,7 +473,7 @@ private void listadoPedido(){
         
     
     }
-     private void dos (){
+     private void dos2 (){
          
          int contador1=0;
          int contador2=0;
@@ -522,7 +522,7 @@ private void listadoPedido(){
          
          
     }
-      private void tres (){
+      private void tres3 (){
           System.out.println("Intoduce el DNI del cliente: ");
           String dni=sc.next().toUpperCase();
           
@@ -551,14 +551,14 @@ private void listadoPedido(){
           }
           return total;
       }
-       private void cuatro (){
+       private void cuatro4 (){
            System.out.println("LISTADO ARTICULOS - UNIDADES VENDIDAS:");
            System.out.println("");
            ArrayList<Articulo> listaArticulos= new ArrayList<>(articulos.values());
            
            listaArticulos.stream().sorted(Comparator.comparing((Articulo a)->unidadesVendidas(a.getIdArticulo())).reversed()).forEach(a-> System.out.println(a.getDescripcion() + " VENDIDAS: "+unidadesVendidas(a.getIdArticulo())));
     }
-        private void cinco (){
+        private void cinco5 (){
             
             ArrayList<Cliente> clientesSinPedido = new ArrayList<>();
             
@@ -679,8 +679,84 @@ private void listadoPedido(){
 }
 //</editor-fold>
     
-  
+    //<editor-fold defaultstate="collapsed" desc="Examen2">
+    
+    private double gastoCliente(Cliente c){
+        return pedidos.stream()
+                .filter(p-> p.getClientePedido().equals(c))
+                .mapToDouble(p-> totalPedido(p))
+                .sum();
+    }
+    
+    private void uno (){
+        System.out.println("Clientes ordenados por gasto (De mayor a menor)");
+        
+        clientes.values().stream()
+                .sorted(Comparator.comparing((Cliente c)-> gastoCliente(c)).reversed())
+                .forEach(c->System.out.println(c+ " Total GASTADO " + gastoCliente(c)));
+    }
+    
+    
+    private void dos (){
+       
+        String seccion;
+        System.out.println("\nSeccion a listar:");
+        seccion=sc.next();
+        System.out.println("Articulos de la sección");
+        articulos.values().stream()
+                .filter(a-> a.getIdArticulo().startsWith(seccion))
+                .filter(a-> a.getExistencias()>0)
+                .sorted(Comparator.comparing(Articulo::getPvp).reversed())
+                .forEach(a-> System.out.println(a));
+                
+    }
+    
+    
+    private void tres (){
+        ArrayList<Articulo> articulosNoVendidos = new ArrayList<>();
+        
+        
+                pedidos.stream()
+                        .flatMap(p->p.getCestaCompra().stream())
+                        .map(LineaPedido::getArticulo)
+                        .collect(Collectors.toSet());
+                System.out.println("");
+                    
+                }
+            
+        
+        
+    
+    
+    
+    private void cuatro (){
+        LocalDate fecha1= LocalDate.now();
+        LocalDate fecha2 = fecha1.minusDays(5);
+        double total = pedidos.stream()
+                .filter(p->p.getFechaPedido().isAfter(fecha2))
+                .mapToDouble(p->totalPedido(p))
+                .sum();
+        System.out.println("Total facturado entre "+fecha2 + " y "+ fecha1 + ": " + total);
+    }
+    
+    
+    private void cinco (){
+        double total = pedidos.stream()
+                .mapToDouble(p->totalPedido(p))
+                .sum();
+        long numPedidos = pedidos.stream().count();
+        double media = 0;
+        if (numPedidos>0){
+            media=total/numPedidos;
+        }
+        System.out.println("Importe Medio Pedidos TIENDA: " +media);
+    }
+    
+}
+        
+    
+//</editor-fold>
         
  
          
-}
+
