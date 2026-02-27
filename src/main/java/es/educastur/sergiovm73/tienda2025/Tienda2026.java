@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 
@@ -32,6 +33,16 @@ public class Tienda2026 {
         articulos=new HashMap();
         
     }
+
+    public HashMap<String, Articulo> getArticulos() {
+        return articulos;
+    }
+
+    public HashMap<String, Cliente> getClientes() {
+        return clientes;
+    }
+    
+    
 
     public ArrayList<Pedido> getPedidos() {
         return pedidos;
@@ -348,7 +359,7 @@ private void listadoPedido(){
 
     }
     
-    private String generaIdPedido(String idCliente){ 
+    public String generaIdPedido(String idCliente){ 
         String nuevoId; //vble String para ir construyendo un nuevo idPedido
          //Calculamos en la vble contador cuantos pedidos tiene el cliente aportado
         int contador = 0;  
@@ -362,14 +373,14 @@ private void listadoPedido(){
         return nuevoId;
     }
     
-    private void stock (String idArticulo, int unidades) throws StockCero, StockInsuficiente {
-        if (articulos.get(idArticulo).getExistencias()==0){
+    private void stock (Articulo a, int unidades) throws StockCero, StockInsuficiente {
+        if (a.getExistencias()==0){
             throw new StockCero("0 unidades disponibles de: " 
-                    + articulos.get(idArticulo).getDescripcion());
+                    + a.getDescripcion());
         }
-        if (articulos.get(idArticulo).getExistencias() < unidades){
-            throw new StockInsuficiente("Sólo hay " + articulos.get(idArticulo).getExistencias() 
-                    + " unidades disponibles de: " + articulos.get(idArticulo).getDescripcion());
+        if (a.getExistencias() < unidades){
+            throw new StockInsuficiente("Sólo hay " + a.getExistencias() 
+                    + " unidades disponibles de: " + a.getDescripcion());
         }
     }
     
@@ -394,7 +405,7 @@ private void listadoPedido(){
             System.out.print("\nTeclea las unidades deseadas: ");
             unidades = sc.nextInt();
             try {
-                stock(idArticulo, unidades);
+                stock(articulos.get(idArticulo), unidades);
                 cestaCompra.add(new LineaPedido(articulos.get(idArticulo),unidades));
             } catch (StockCero ex) {
                 System.out.println(ex.getMessage());
@@ -450,9 +461,106 @@ private void listadoPedido(){
     }
     //ordenar los pedidos por total de mayor a menos y viceversa cons streams
 
-   
+   //Pedidos ordenados por fecha
+    public void colecciones(){
+        List<Pedido> pedidosOrdenadosFecha
+                =pedidos.stream()
+                .sorted(Comparator.comparing(Pedido::getFechaPedido))
+                .collect(Collectors.toList());
+        
+        pedidos.stream().forEach(p->System.out.println(p.getIDpedido()+" -"+p.getFechaPedido()));
+        System.out.println("\n");
+        pedidosOrdenadosFecha.stream().forEach(p->System.out.println(p.getIDpedido()));
+
+    
+    
+    TreeMap<Double, Pedido> pedidosConTotales=new TreeMap();
+    for (Pedido p:pedidos){
+    pedidosConTotales.put(totalPedido(p), p);
+}
+    //muestra la nueva coleccion
+        System.out.println("\n");
+    for (Double total:pedidosConTotales.descendingKeySet()){
+        System.out.println(pedidosConTotales.get(total).getIDpedido()+" - "+total);
+    }
     
             
+    //clientes ordenados por el total gastado
+    
+    //EJEMPLO 3
+        //CREAR UN MAPA ORDENADO (TreeMap) CON LOS CLIENTES (values) Y EL TOTAL GASTADO POR CADA CLIENTE
+        TreeMap<Double, Cliente> ventasPorCliente=new TreeMap();
+        for (Cliente c:clientes.values()){
+            ventasPorCliente.put(totalCliente(c),c);
+        }
+        
+        //COMPROBACIÓN DE RESULTADOS .keySet mostrará de < a > los totales
+        // .descendingKeySet() los mostrará de > a <
+        System.out.println("\n");
+        for (Double totCli:ventasPorCliente.keySet()){
+            System.out.println(ventasPorCliente.get(totCli).getNombre()+ " - " + totCli);
+        }
+        
+        //EJEMPLO 4
+        //CREAR UNA COLECCION DE TIPO List CON LOS ARTICULOS DE CADA SECCION
+        List <Articulo> perifericos, almacenamiento, monitores, impresoras;
+        
+        // CON STREAMS y .collect
+        perifericos=articulos.values().stream()
+                .filter(a->a.getIdArticulo().startsWith("1"))
+                .collect(Collectors.toList());
+        almacenamiento=articulos.values().stream()
+                .filter(a->a.getIdArticulo().startsWith("2"))
+                .collect(Collectors.toList());
+        impresoras=articulos.values().stream()
+                .filter(a->a.getIdArticulo().startsWith("3"))
+                .collect(Collectors.toList());
+        monitores=articulos.values().stream()
+                .filter(a->a.getIdArticulo().startsWith("4"))
+                .collect(Collectors.toList());
+        
+        //ESTILO CLÁSICO CON UN switch y .add
+        for (Articulo a : articulos.values()) {
+            switch (a.getIdArticulo().charAt(0)) {
+                case '1':
+                    perifericos.add(a);
+                       break;
+                case '2':
+                    almacenamiento.add(a);
+                    break;
+                case '3':
+                    impresoras.add(a);
+                    break;
+                case '4':
+                    monitores.add(a);
+                    break;
+            }
+        }
+        //COMPROBACIÓN DE RESULTADOS
+        System.out.println("\n" + perifericos);
+        System.out.println("\n" + almacenamiento);
+        System.out.println("\n" + impresoras);
+        System.out.println("\n" + monitores);
+        
+        //EJEMPLO 5 - BORRADO EN COLECCIONES
+        
+        //BORRAR LOS ARTICULOS DE LA SECCIÓN IMPRESORAS
+        articulos.values().removeIf(a->a.getIdArticulo().startsWith("3"));
+        System.out.println("\n");
+        articulos.values().stream()
+                .forEach(a->System.out.println(a));
+        
+
+
+        //BORRAR LOS PEDIDOS DE MÁS DE 3 DÍAS DE ANTIGUEDAD
+        //Las colecciones de tipo List no admiten removeIf()
+        List <Pedido> pedidosAntiguos=pedidos.stream()
+                .filter(p->p.getFechaPedido().isBefore(LocalDate.now().minusDays(3)))
+                .collect(Collectors.toList()); 
+        pedidos.removeAll(pedidosAntiguos);
+        
+        System.out.println(pedidos);
+    
     //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="Examen">
@@ -677,6 +785,20 @@ private void listadoPedido(){
             .mapToInt(LineaPedido::getUnidades)
             .sum();
 }
+    //Total gastado por un Cliente
+    public double totalCliente(Cliente c){
+        return pedidos.stream().filter(p-> p.getClientePedido().equals(c))
+                .mapToDouble(p -> totalPedido(p)).sum();
+    }
+    
+    //Importe Total de un Pedido
+    public double totalPedido2(Pedido p)
+    {
+        return p.getCestaCompra().stream()
+                .mapToDouble(l-> l.getArticulo().getPvp()
+                    *l.getUnidades()).sum();
+    }
+    
 //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="Examen2">
