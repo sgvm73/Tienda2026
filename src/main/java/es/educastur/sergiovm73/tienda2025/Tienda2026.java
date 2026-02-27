@@ -4,6 +4,9 @@
  */
 package es.educastur.sergiovm73.tienda2025;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -55,7 +58,7 @@ public class Tienda2026 {
         Tienda2026 t = new Tienda2026();
         t.cargaDatos();
         
-        t.cinco();
+        t.guardaPedido();
         //t.menu();
     }
     
@@ -560,7 +563,7 @@ private void listadoPedido(){
         pedidos.removeAll(pedidosAntiguos);
         
         System.out.println(pedidos);
-    
+    }
     //</editor-fold>
     
     //<editor-fold defaultstate="collapsed" desc="Examen">
@@ -694,7 +697,7 @@ private void listadoPedido(){
 //</editor-fold>
 
     
-//<editor-fold defaultstate="collapsed" desc="STREAMS">
+    //<editor-fold defaultstate="collapsed" desc="STREAMS">
     private void listadoStreams(){
         System.out.println("ARTICULOS DE MENOS DE 100 EUROS POR PRECIO DE - A");
         articulos.values().stream()
@@ -874,11 +877,42 @@ private void listadoPedido(){
         System.out.println("Importe Medio Pedidos TIENDA: " +media);
     }
     
-}
+
         
     
 //</editor-fold>
-        
- 
+    //<editor-fold defaultstate="collapsed" desc="Archivos">
+    
+    //file f
+    private void guardaClientes() {
+Scanner sc=new Scanner(System.in);
+ try (BufferedWriter bw = new BufferedWriter(new FileWriter("Clientes.txt",true))) {
+     for (Cliente c:clientes.values()){
+         bw.write(c.getIdCliente()+","+c.getNombre()+","+c.getTelefono()+","+c.getEmail());
+         bw.newLine();
          
+ 
+ }
+ } catch (IOException e) {
+ System.out.println("No se ha podido escribir en el fichero");
+ }
+}
+    private void guardaPedido() {
+Scanner sc=new Scanner(System.in);
+ try (BufferedWriter bw = new BufferedWriter(new FileWriter("Pedidos.txt",true))) {
+     for (Pedido p:pedidos){
+         bw.write(p.getIDpedido()+","+p.getClientePedido()+","+p.getFechaPedido()+","+p.getCestaCompra());
+         bw.newLine();
+         
+ 
+ }
+ } catch (IOException e) {
+ System.out.println("No se ha podido escribir en el fichero");
+ }
+}
+    
+//</editor-fold>
+       
+ 
+}       
 
