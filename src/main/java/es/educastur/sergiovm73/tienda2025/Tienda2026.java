@@ -5,6 +5,7 @@
 package es.educastur.sergiovm73.tienda2025;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -376,7 +377,7 @@ private void listadoPedido(){
         return nuevoId;
     }
     
-    private void stock (Articulo a, int unidades) throws StockCero, StockInsuficiente {
+    public void stock (Articulo a, int unidades) throws StockCero, StockInsuficiente {
         if (a.getExistencias()==0){
             throw new StockCero("0 unidades disponibles de: " 
                     + a.getDescripcion());
@@ -884,19 +885,7 @@ private void listadoPedido(){
     //<editor-fold defaultstate="collapsed" desc="Archivos">
     
     //file f
-    private void guardaClientes() {
-Scanner sc=new Scanner(System.in);
- try (BufferedWriter bw = new BufferedWriter(new FileWriter("Clientes.txt",true))) {
-     for (Cliente c:clientes.values()){
-         bw.write(c.getIdCliente()+","+c.getNombre()+","+c.getTelefono()+","+c.getEmail());
-         bw.newLine();
-         
- 
- }
- } catch (IOException e) {
- System.out.println("No se ha podido escribir en el fichero");
- }
-}
+    
     private void guardaPedido() {
 Scanner sc=new Scanner(System.in);
  try (BufferedWriter bw = new BufferedWriter(new FileWriter("Pedidos.txt",true))) {
@@ -910,9 +899,96 @@ Scanner sc=new Scanner(System.in);
  System.out.println("No se ha podido escribir en el fichero");
  }
 }
+    private void guardaClientes(){
+        //GUARDAMOS LOS CLIENTES LÍNEA A LÍNEA EN UN ARCHIVO .txt ESCRIBIENDO LOS DATOS SEGUN TENGAMOS DISPUESTO EN EL toString()
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("D:/clientes.txt"))) {
+            for (Cliente c:clientes.values()){
+               bw.write(c.toString());
+               bw.newLine();
+            }
+            System.out.println("Archivo D:/clientes.txt creado correctamente");                              
+        } catch (IOException e) {
+            System.out.println("No se ha podido crear el archivo D:/clientes.txt");
+        }
+        
+         //GUARDAMOS LOS CLIENTES LÍNEA A LÍNEA EN UN ARCHIVO .csv CON LOS VALORES DE LOS ATRIBUTOS SEPARADOS POR ,        
+        
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("D:/clientes.csv"))) {
+            for (Cliente c:clientes.values()){
+               bw.write(c.getIdCliente()+","+c.getNombre()+","+c.getTelefono()+","+c.getEmail()+"\n");
+            }
+            System.out.println("Archivo D:/clientes.csv creado correctamente");
+        } catch (IOException e) {
+            System.out.println("No se ha podido crear el archivo D:/clientes.txt");
+        }
+    }
+    
+    private void leeClientes(){
+        
+        //SIMPLEMENTE LEER LAS LÍNEAS DEL ARCHIVO clientes.txt Y MOSTRARLAS POR PANTALLA
+        System.out.println("\nListado de Clientes directamente desde clientes.txt\n");
+        try(Scanner scClientes=new Scanner(new File("D:/clientes.txt"))){
+            while (scClientes.hasNextLine()){
+                System.out.println(scClientes.nextLine());                                                              
+            }
+        }catch(IOException e){
+            System.out.println(e.toString());
+        }
+        
+        //CREAR UNA NUEVA COLECCIÓN DE TIPO HASHMAP A PARTIR DEL ARCHIVO clientes.csv
+        HashMap <String,Cliente> clientesAux = new HashMap();
+        try(Scanner scClientes=new Scanner(new File("D:/clientes.csv"))){
+            while (scClientes.hasNextLine()){
+                String [] atributos = scClientes.nextLine().split("[,]");                                                              
+                Cliente c=new Cliente(atributos[0],atributos[1],atributos[2],atributos[3]); 
+                clientesAux.put(atributos[0], c);
+            }
+        }catch(IOException e){
+            System.out.println(e.toString());
+        }
+        System.out.println("\nListado de Clientes del nuevo HashMap clientesAux\n");
+        clientesAux.values().forEach(System.out::println);
+    }
+    
+    private void guardaArticulosPorSeccion(){
+        //GUARDAMOS LOS 
+        try (BufferedWriter bwPerifericos = new BufferedWriter(new FileWriter("D:/perifericos.csv"));
+             BufferedWriter bwAlmacenamiento = new BufferedWriter(new FileWriter("D:/almacenamiento.csv"));
+             BufferedWriter bwImpresoras = new BufferedWriter(new FileWriter("D:/impresoras.csv"));
+             BufferedWriter bwMonitores = new BufferedWriter(new FileWriter("D:/monitores.csv")))
+        {
+            for (Articulo a : articulos.values()) {
+                switch (a.getIdArticulo().charAt(0)) {
+                case '1':
+                    bwPerifericos.write(a.getIdArticulo()+","+a.getDescripcion()+","+a.getExistencias()+","+a.getPvp()+"\n");
+                    break;
+                case '2':
+                    bwAlmacenamiento.write(a.getIdArticulo()+","+a.getDescripcion()+","+a.getExistencias()+","+a.getPvp()+"\n");
+                    break;
+                case '3':
+                    bwImpresoras.write(a.getIdArticulo()+","+a.getDescripcion()+","+a.getExistencias()+","+a.getPvp()+"\n");
+                    break;
+                case '4':
+                    bwMonitores.write(a.getIdArticulo()+","+a.getDescripcion()+","+a.getExistencias()+","+a.getPvp()+"\n");
+                    break;
+                }
+            }
+            System.out.println("Archivos creados correctamente");                              
+        } catch (IOException e) {
+            System.out.println("No se han podido crear los archivos");
+            File f=new File("D:/perifericos.csv");
+            f.delete();
+            f=new File("D:/almacenamiento.csv");
+            f.delete();
+            f=new File("D:/impresoras.csv");
+            f.delete();
+            f=new File("D:/monitores.csv");
+            f.delete();
+        }
     
 //</editor-fold>
        
  
-}       
+}
+}
 

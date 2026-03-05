@@ -77,6 +77,13 @@ public class Tienda2026Test {
         () -> assertEquals(0,t.totalCliente(t.getClientes().get("02337565Y")))
         );
     }
+    
+    public void Teststock(){
+        assertThrows(StockCero.class, () -> {t.stock(t.getArticulos().get("1-11"),5);});
+        assertThrows(StockCero.class, () -> {t.stock(t.getArticulos().get("2-33"),5);});
+        assertThrows(StockInsuficiente.class, () -> {t.stock(t.getArticulos().get("3-11"),5);});
+        assertThrows(StockInsuficiente.class, () -> {t.stock(t.getArticulos().get("3-22"),10);});
+    }
 
     @Override
     public String toString() {
