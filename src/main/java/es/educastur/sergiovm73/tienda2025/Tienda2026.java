@@ -5,9 +5,16 @@
 package es.educastur.sergiovm73.tienda2025;
 
 import java.io.BufferedWriter;
+import java.io.EOFException;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -23,10 +30,10 @@ import java.util.stream.Collectors;
  *
  * @author 1dawd24
  */
-public class Tienda2026 {
+public class Tienda2026 implements Serializable{
 
     private ArrayList <Pedido> pedidos;
-    private Scanner sc=new Scanner(System.in);
+    private static final transient Scanner sc=new Scanner(System.in);
     private HashMap <String, Articulo> articulos;
     private HashMap <String, Cliente> clientes;
     
@@ -59,7 +66,7 @@ public class Tienda2026 {
         Tienda2026 t = new Tienda2026();
         t.cargaDatos();
         
-        t.guardaPedido();
+        t.leerArticulosPorSeccion();
         //t.menu();
     }
     
@@ -950,45 +957,147 @@ Scanner sc=new Scanner(System.in);
         clientesAux.values().forEach(System.out::println);
     }
     
-    private void guardaArticulosPorSeccion(){
-        //GUARDAMOS LOS 
-        try (BufferedWriter bwPerifericos = new BufferedWriter(new FileWriter("D:/perifericos.csv"));
-             BufferedWriter bwAlmacenamiento = new BufferedWriter(new FileWriter("D:/almacenamiento.csv"));
-             BufferedWriter bwImpresoras = new BufferedWriter(new FileWriter("D:/impresoras.csv"));
-             BufferedWriter bwMonitores = new BufferedWriter(new FileWriter("D:/monitores.csv")))
-        {
+    public void guardaArticulosPorSeccion(){
+        try (BufferedWriter bwPer = new BufferedWriter(new FileWriter("perifericos.csv"));
+            BufferedWriter bwAlm = new BufferedWriter(new FileWriter("almacenamiento.csv"));
+            BufferedWriter bwImp = new BufferedWriter(new FileWriter("impresores.csv"));
+            BufferedWriter bwMon = new BufferedWriter(new FileWriter("monitores.csv"))) {
+            
             for (Articulo a : articulos.values()) {
                 switch (a.getIdArticulo().charAt(0)) {
-                case '1':
-                    bwPerifericos.write(a.getIdArticulo()+","+a.getDescripcion()+","+a.getExistencias()+","+a.getPvp()+"\n");
-                    break;
-                case '2':
-                    bwAlmacenamiento.write(a.getIdArticulo()+","+a.getDescripcion()+","+a.getExistencias()+","+a.getPvp()+"\n");
-                    break;
-                case '3':
-                    bwImpresoras.write(a.getIdArticulo()+","+a.getDescripcion()+","+a.getExistencias()+","+a.getPvp()+"\n");
-                    break;
-                case '4':
-                    bwMonitores.write(a.getIdArticulo()+","+a.getDescripcion()+","+a.getExistencias()+","+a.getPvp()+"\n");
-                    break;
+                    case '1':
+                        bwPer.write(a.getIdArticulo() + " - " +  a.getDescripcion() + " - " + a.getExistencias() + " - " + a.getPvp() + "\n");
+                        break;
+                    case '2':
+                        bwAlm.write(a.getIdArticulo() + " - " +  a.getDescripcion() + " - " + a.getExistencias() + " - " + a.getPvp() + "\n");
+                        break;
+                    case '3':
+                        bwImp.write(a.getIdArticulo() + " - " +  a.getDescripcion() + " - " + a.getExistencias() + " - " + a.getPvp() + "\n");
+                        break;
+                    case '4':
+                        bwMon.write(a.getIdArticulo() + " - " +  a.getDescripcion() + " - " + a.getExistencias() + " - " + a.getPvp() + "\n");
+                        break;
                 }
             }
-            System.out.println("Archivos creados correctamente");                              
+            System.out.println("Archivo creados correctamente");
         } catch (IOException e) {
             System.out.println("No se han podido crear los archivos");
-            File f=new File("D:/perifericos.csv");
+            File f = new File("D:/perifericos.csv");
             f.delete();
-            f=new File("D:/almacenamiento.csv");
+            f = new File("D:/almacenamiento.csv");
             f.delete();
-            f=new File("D:/impresoras.csv");
+            f = new File("D:/impresoras.csv");
             f.delete();
-            f=new File("D:/monitores.csv");
+            f = new File("D:/monitores.csv");
             f.delete();
         }
+    }
+    public void leerArticulosPorSeccion(){
+         System.out.println("\nListado de artículos por sección\n");
+        try(Scanner scPer = new Scanner(new File("perifericos.csv"));
+           Scanner scAlm = new Scanner(new File("almacenamiento.csv"));
+           Scanner scImp = new Scanner(new File("impresores.csv"));
+           Scanner scMon = new Scanner(new File("monitores.csv"))){
+            
+            System.out.println("\n\nSECCION PERIFERICOS");
+            while (scPer.hasNextLine()){
+                System.out.println(scPer.nextLine());                                                
+            }
+            
+            System.out.println("\n\nSECCION ALMACENAMIENTO");
+            while (scAlm.hasNextLine()){
+                System.out.println(scAlm.nextLine());                                       
+            }
+            
+            System.out.println("\n\nSECCION IMPRESORES");
+            while (scImp.hasNextLine()){
+                System.out.println(scImp.nextLine());                                                        
+            }
+            
+            System.out.println("\n\nSECCION MONITORES");
+            while (scMon.hasNextLine()){
+                System.out.println(scMon.nextLine());                                                              
+            }
+        }catch(IOException e){
+            System.out.println(e.toString());
+        }
+    }
+    public void ExportarColecciones() {
+        try (ObjectOutputStream oosArticulos = new ObjectOutputStream(new FileOutputStream("D:/articulos.dat"));
+            ObjectOutputStream oosClientes = new ObjectOutputStream(new FileOutputStream("D:/clientes.dat"));
+            ObjectOutputStream oosPedidos = new ObjectOutputStream (new FileOutputStream("D:/pedidos.dat"))) {
+	   	   
+            for (Articulo a : articulos.values()) {
+                oosArticulos.writeObject(a);
+            }
+            for (Cliente c:clientes.values()) {
+                oosClientes.writeObject(c);
+            }
+            for (Pedido p:pedidos){
+                 oosPedidos.writeObject(p);
+            }
+            System.out.println("Copia de seguridad realizada con éxito.");
+	    
+        } catch (IOException ex) {
+            System.out.println("No se han podido crear los archivos correctamente, "
+                    + "revise unidades de almacenamiento e inténtelo de nuevo");
+            File f=new File("D:/articulos.dat");
+            f.delete();
+            f=new File("D:/clientes.dat");
+            f.delete();
+            f=new File("D:/pedidos.dat");
+            f.delete();
+        } 
+    }  
+    
+    public void importarColecciones() {
+        /* HAY QUE LEER DESDE CADA ARCHIVO POR SEPARADO PORQUE SI INTENTAMOS METERLO TODO EN EL MISMO
+        TRY-CATCH AL LLEGAR AL FINAL DEL PRIMER ARCHIVO SE PRODUCE LA EOFException Y SÓLO SE 
+        LEERÍA BIEN EL PRIMER ARCHIVO, EL RESTO NO */ 
+        
+        try (ObjectInputStream oisArticulos = new ObjectInputStream(new FileInputStream("D:/articulos.dat"))){
+            Articulo a;
+            while ( (a=(Articulo)oisArticulos.readObject()) != null){
+                 articulos.put(a.getIdArticulo(), a);
+            } 
+        } catch (FileNotFoundException e) {
+                 System.out.println(e.toString());    
+        } catch (EOFException e){
+                System.out.println("Finalizada la lectura del archivo articulos.dat");
+        } catch (ClassNotFoundException | IOException e) {
+                System.out.println(e.toString()); 
+        } 
+     
+        try (ObjectInputStream oisClientes = new ObjectInputStream(new FileInputStream("D:/clientes.dat"))){
+            Cliente c;
+            while ( (c=(Cliente)oisClientes.readObject()) != null){
+                 clientes.put(c.getIdCliente(), c);
+            } 
+	} catch (FileNotFoundException e) {
+                 System.out.println(e.toString());    
+        } catch (EOFException e){
+                System.out.println("Finalizada la lectura del archivo clientes.dat");
+        } catch (ClassNotFoundException | IOException e) {
+                System.out.println(e.toString()); 
+        }
+        
+        try (ObjectInputStream oisPedidos = new ObjectInputStream(new FileInputStream("D:/pedidos.dat"))){
+            Pedido p;
+            while ( (p=(Pedido)oisPedidos.readObject()) != null){
+                 pedidos.add(p);
+            } 
+	} catch (FileNotFoundException e) {
+                 System.out.println(e.toString());    
+        } catch (EOFException e){
+                 System.out.println("Finalizada la lectura del archivo pedidos.dat");
+        } catch (ClassNotFoundException | IOException e) {
+                System.out.println(e.toString()); 
+        }
+    }   
+    
     
 //</editor-fold>
        
- 
-}
+
 }
 
