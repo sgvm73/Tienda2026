@@ -64,9 +64,13 @@ public class Tienda2026 implements Serializable{
         
         
         Tienda2026 t = new Tienda2026();
-        t.cargaDatos();
+        t.cargaDatosExamen();
         
-        t.leerArticulosPorSeccion();
+        //t.unoExamen();
+        //t.dosExamen();
+        //t.tresExamen();
+        t.cuatroExamen();
+        //t.cincoExamen();
         //t.menu();
     }
     
@@ -1093,8 +1097,200 @@ Scanner sc=new Scanner(System.in);
         } catch (ClassNotFoundException | IOException e) {
                 System.out.println(e.toString()); 
         }
-    }   
+    }
     
+   public void backupPorSeccion() {
+        Scanner sc=new Scanner(System.in);
+        try (ObjectOutputStream oosPerifericos = new ObjectOutputStream(new FileOutputStream("D:/Perifericos.dat"));
+            ObjectOutputStream oosAlmacenamiento = new ObjectOutputStream(new FileOutputStream("D:/Almacenamiento.dat"));
+            ObjectOutputStream oosImpresoras = new ObjectOutputStream(new FileOutputStream("D:/Impresoras.dat"));
+            ObjectOutputStream oosMonitores = new ObjectOutputStream (new FileOutputStream("D:/Monitores.dat"))) {
+	   	   
+            for (Articulo a : articulos.values()) {
+                char seccion=a.getIdArticulo().charAt(0);
+                switch (seccion) {
+                    case '1':
+                        oosPerifericos.writeObject(a);
+                        break;
+                    case '2':
+                        oosAlmacenamiento.writeObject(a);
+                        break;
+                    case '3':
+                        oosImpresoras.writeObject(a);
+                        break;
+                    case '4':
+                        oosMonitores.writeObject(a);
+                        break;
+                }
+            }
+            System.out.println("Copia de seguridad realizada con éxito.");
+        } catch (IOException e) {
+            System.out.println("No se ha podido realizar la copia de Seguridad correctamente, "
+                + "revise unidades de almacenamiento e inténtelo de nuevo");
+            File f=new File("D:/perifericos.dat");
+            f.delete();
+            f=new File("D:/almacenamiento.dat");
+            f.delete();
+            f=new File("D:/impresoras.dat");
+            f.delete();
+            f=new File("D:/monitores.dat");
+            f.delete();
+        } 
+        
+         /* PARA COMPROBAR QUE FUNCIONA, VERIFICAMOS QUE SE HAN CREADO LOS 4 ARCHIVOS EN LA CARPETA
+        RAÍZ DEL PROYECTO CON LA FECHA Y HORA ACTUAL - 
+        ... Y PARA COMPROBAR EL CONTENIDO DE LOS ARCHIVOS LEEREMOS/IMPRIMIREMOS "AL VUELO" SÓLO 1 DE ELLOS
+         CUYA SECCION SOLICITAMOS POR TECLADO
+        */
+                
+        System.out.println("Teclea la Seccion de los articulos CUYO ARCHIVO QUIERES COMPROBAR:");        
+        char seccion=sc.next().charAt(0);
+        String nombreArchivo=null;
+        switch (seccion) {
+            case '1':
+                nombreArchivo="D:/Perifericos.dat";
+                break;
+            case '2':
+                nombreArchivo="D:/Almacenamiento.dat";
+                break;
+            case '3':
+                nombreArchivo="D:/Impresoras.dat";
+                break;
+            case '4':
+                nombreArchivo="D:/Monitores.dat";
+                break;
+        }
+        Articulo a;
+        try (ObjectInputStream oisArticulos = new ObjectInputStream(new FileInputStream(nombreArchivo))){
+            while ( (a=(Articulo)oisArticulos.readObject()) != null){
+                System.out.println(a);
+            } 
+        } catch (FileNotFoundException e) {
+                 System.out.println(e.toString());    
+        } catch (EOFException e){
+            
+        } catch (ClassNotFoundException | IOException e) {
+                System.out.println(e.toString()); 
+        } 
+    }  
+   
+   private void cargaDatosExamen() {
+        
+        clientes.put("36347775R", new Cliente("36347775R", "LOLA", "649222222", "lola@gmail.com"));
+        clientes.put("63921307Y", new Cliente("63921307Y", "JUAN", "652333333", "juan@gmail.com"));
+        clientes.put("80580845T", new Cliente("80580845T", "ANA", "658111111", "ana@gmail.com"));
+        clientes.put("02337565Y", new Cliente("02337565Y", "EDU", "634567890", "edu@gmail.com"));
+
+        articulos.put("1-11", new Articulo("1-11", "RATON LOGITECH ST ", 0, 15));
+        articulos.put("1-22", new Articulo("1-22", "TECLADO STANDARD  ", 5, 18));
+        articulos.put("2-11", new Articulo("2-11", "HDD SEAGATE 1 TB  ", 15, 80));
+        articulos.put("2-22", new Articulo("2-22", "SSD KINGSTOM 256GB", 9, 70));
+        articulos.put("2-33", new Articulo("2-33", "SSD KINGSTOM 512GB", 0, 200));
+        articulos.put("3-11", new Articulo("3-11", "HP LASERJET HP800 ", 2, 200));
+        articulos.put("3-22", new Articulo("3-22", "EPSON PRINT XP300 ", 5, 80));
+        articulos.put("4-11", new Articulo("4-11", "ASUS  MONITOR  22 ", 5, 100));
+        articulos.put("4-22", new Articulo("4-22", "HP MONITOR LED 28 ", 5, 180));
+        articulos.put("4-33", new Articulo("4-33", "SAMSUNG ODISSEY G5", 12, 580));
+
+        LocalDate hoy = LocalDate.now();
+        pedidos.add(new Pedido("80580845T-001/2026", clientes.get("80580845T"), LocalDate.parse("2026-01-05"), new ArrayList<>(List.of(new LineaPedido(articulos.get("1-11"), 3), new LineaPedido(articulos.get("4-22"), 3)))));
+        pedidos.add(new Pedido("80580845T-002/2026", clientes.get("80580845T"), LocalDate.parse("2026-01-10"), new ArrayList<>(List.of(new LineaPedido(articulos.get("4-11"), 3), new LineaPedido(articulos.get("4-22"), 2), new LineaPedido(articulos.get("4-33"), 4)))));
+        pedidos.add(new Pedido("80580845T-003/2026", clientes.get("80580845T"), LocalDate.parse("2026-01-15"), new ArrayList<>(List.of(new LineaPedido(articulos.get("2-11"), 1), new LineaPedido(articulos.get("3-22"), 2)))));
+        pedidos.add(new Pedido("36347775R-001/2026", clientes.get("36347775R"), LocalDate.parse("2026-02-05"), new ArrayList<>(List.of(new LineaPedido(articulos.get("4-22"), 1), new LineaPedido(articulos.get("2-22"), 3)))));
+        pedidos.add(new Pedido("36347775R-002/2026", clientes.get("36347775R"), LocalDate.parse("2026-02-10"), new ArrayList<>(List.of(new LineaPedido(articulos.get("4-33"), 3), new LineaPedido(articulos.get("2-11"), 3)))));
+        pedidos.add(new Pedido("63921307Y-001/2026", clientes.get("63921307Y"), LocalDate.parse("2026-03-05"), new ArrayList<>(List.of(new LineaPedido(articulos.get("2-11"), 5), new LineaPedido(articulos.get("2-33"), 3), new LineaPedido(articulos.get("4-33"), 2)))));
+}
+   
+   
+   //</editor-fold>
+   //<editor-fold defaultstate="collapsed" desc="Examen Archivos">
+   
+
+    public void unoExamen(){
+        List<Cliente> lista = clientes.values().stream().sorted(Comparator.comparing(Cliente::getNombre)).collect(Collectors.toList());
+        try (BufferedWriter bw=new BufferedWriter(new FileWriter ("D:/clientesOrdenados.txt"))){
+            for (Cliente c: lista){
+                bw.write("("+ c.getIdCliente()+ ") - " + c.getNombre()+" - " + c.getTelefono() + " - " + c.getEmail());
+                bw.newLine();
+            }
+            System.out.println("Archivo clientesOrdenados.txt generado");
+        }catch (IOException ex) {
+            System.out.println("Error, No se han podido crear los archivos");
+        }
+    }
+    
+    public void dosExamen(){
+                try (ObjectOutputStream oosEne = new ObjectOutputStream(new FileOutputStream("D:/pedidosEnero2026.dat"));
+            ObjectOutputStream oosFeb = new ObjectOutputStream(new FileOutputStream("D:/pedidosFebrero2026.dat"));
+            ObjectOutputStream oosMar = new ObjectOutputStream (new FileOutputStream("D:/pedidosMarzo2026.dat"))) {
+	   	   
+            for (Pedido p: pedidos) {
+                int mes=p.getFechaPedido().getMonthValue();
+                switch (mes){
+                    case 1:
+                        oosEne.writeObject(p);
+                        break;
+                    case 2:
+                        oosFeb.writeObject(p);
+                        break;
+                    case 3:
+                        oosMar.writeObject(p);
+                        break;
+                }
+            }
+                    System.out.println("Copia de seguridad realizada con éxito");
+                    
+            
+            
+	    
+        } catch (IOException e) {
+            System.out.println(e.toString());
+            File f=new File("D:/pedidosEnero2026.dat");
+            f.delete();
+            f=new File("D:/pedidosFebrero2026.dat");
+            f.delete();
+            f=new File("D:/pedidosMarzo2026.dat");
+            f.delete();
+        } 
+    }
+    
+    public void tresExamen(){
+       ArrayList<Pedido> pedidosPorMeses = new ArrayList<>();
+       String[]rutas={"D:/pedidosEnero2026.dat", "D:/pedidosFebrero2026.dat", "D:/pedidosMarzo2026.dat"};
+       for (String ruta: rutas){
+           try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(ruta))){
+               while (true){
+                   pedidosPorMeses.add((Pedido)ois.readObject());
+               }
+           }catch (EOFException e){
+               System.out.println("Fin de lectura: " +ruta);
+           }catch (Exception e){
+               System.out.println("Error en " + ruta + ": "+e.getMessage());
+           }
+       }
+        System.out.println("\nLISTADO ARRAYLIST:");
+        pedidosPorMeses.forEach(System.out::println);
+    }
+    
+    public void cuatroExamen(){
+        for (Cliente c:clientes.values()){
+            List<Pedido> deCliente=pedidos.stream().filter(p->p.getClientePedido().getIdCliente().equals(c.getIdCliente())).collect(Collectors.toList());
+            if(!deCliente.isEmpty()){
+                try(BufferedWriter bw=new BufferedWriter(new FileWriter("D:/pedidos_" + c.getNombre()+".txt"))){
+                  for (Pedido p:deCliente) {
+                      bw.write(p.getIDpedido()+","+p.getFechaPedido()+","+totalPedido(p)+"\n");
+                  } 
+                }catch (IOException e){
+                    System.out.println("Error");
+                }
+            }
+        }
+    }
+    
+    public void cincoExamen(){
+        Scanner sc=new Scanner(System.in);
+        
+    }
     
 //</editor-fold>
        
